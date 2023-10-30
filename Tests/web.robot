@@ -37,6 +37,8 @@ Verify Damage Coverage
     ${damage_coverage_radio_xpath} =  Set Variable  ${damage_coverage_xpath}/../../../../../input[@type='radio']
     Element Should Exist    ${damage_coverage_radio_xpath}
     Get Element States  xpath=${damage_coverage_radio_xpath}  contains  checked
+    ${summary_confirmation_xpath} =  Set Variable  //h3[contains(text(), 'Summary')]/..//div[contains(text(), '12-month Damage Cover')]
+    Element Should Exist    ${summary_confirmation_xpath}
 
 Add Item To Cart
     [Arguments]  ${specs}
