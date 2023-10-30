@@ -1,5 +1,6 @@
 *** Settings ***
 Library   Browser
+Library    String
 Suite Setup  Open Back Market
 
 *** Variables ***
@@ -16,6 +17,9 @@ Test Cart
 Test Damage Coverage
     Add Damage Coverage    12-month Damage Cover
     Verify Damage Coverage  12-month Damage Cover
+
+Test Total Amount
+    Verify Total Amount
     
 *** Keywords ***
 Open Back Market
@@ -24,6 +28,32 @@ Open Back Market
     ${overlay_present} =  Run Keyword And Return Status    Get Element  xpath=//div[@data-testid='overlay']
     Run Keyword If    ${overlay_present}
     ...    Close Cookie Notification
+
+Verify Total Amount
+    ${unit_price_xpath} =  Set Variable  //div[@data-qa='product-price']
+    ${insurance_price_xpath} =  Set Variable  (//div[@data-qa='insurance']/div)[2]
+    ${service_price_xpath} =  Set Variable  //div[@data-qa='service-fee']
+    ${total_price_xpath} =  Set Variable  //div[@data-qa='price-after-discount']
+    Element Should Exist    ${unit_price_xpath}
+    Element Should Exist    ${insurance_price_xpath}
+    Element Should Exist    ${service_price_xpath}
+    Element Should Exist    ${total_price_xpath}
+    ${s_unit} =  Get Text  xpath=${unit_price_xpath}
+    ${s_insurance} =  Get Text  xpath=${insurance_price_xpath}
+    ${s_service} =  Get Text  xpath=${service_price_xpath}
+    ${s_total} =  Get Text  xpath=${total_price_xpath}
+    ${f_unit} =  Convert To Float  ${s_unit}
+    ${f_insurance} =  Convert To Float    ${s_insurance}
+    ${f_service} =  Convert To Float  ${s_service}
+    ${f_total} =  Convert To Float  ${s_total}
+    ${expected_total} =  Evaluate    ${f_unit} + ${f_insurance} + ${f_service}
+    Should Be Equal As Numbers    ${expected_total}    ${f_total}
+
+Convert To Float
+    [Arguments]  ${a_string}
+    ${string_value} =  Remove String  ${a_string.strip()}  £
+    ${string_value} =  Convert To Number    ${string_value}
+    [return]  ${string_value}
 
 Add Damage Coverage
     [Arguments]  ${coverage_text}
