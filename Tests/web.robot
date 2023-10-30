@@ -14,7 +14,8 @@ Test Cart
     Verify Item Added To Cart  iPhone 12 64GB - Black - Unlocked
 
 Test Damage Coverage
-    
+    Add Damage Coverage    12-month Damage Cover
+    Verify Damage Coverage  12-month Damage Cover
     
 *** Keywords ***
 Open Back Market
@@ -23,6 +24,19 @@ Open Back Market
     ${overlay_present} =  Run Keyword And Return Status    Get Element  xpath=//div[@data-testid='overlay']
     Run Keyword If    ${overlay_present}
     ...    Close Cookie Notification
+
+Add Damage Coverage
+    [Arguments]  ${coverage_text}
+    ${damage_coverage_xpath} =  Set Variable  //span[contains(text(), '${coverage_text}')]
+    Element Should Exist    ${damage_coverage_xpath}
+    Click  xpath=${damage_coverage_xpath}
+    
+Verify Damage Coverage
+    [Arguments]  ${coverage_text}
+    ${damage_coverage_xpath} =  Set Variable  //span[contains(text(), '${coverage_text}')]
+    ${damage_coverage_radio_xpath} =  Set Variable  ${damage_coverage_xpath}/../../../../../input[@type='radio']
+    Element Should Exist    ${damage_coverage_radio_xpath}
+    Get Element States  xpath=${damage_coverage_radio_xpath}  contains  checked
 
 Add Item To Cart
     [Arguments]  ${specs}
