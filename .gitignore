@@ -161,3 +161,4 @@ cython_debug/
 
 # RobotFramework results
 Results/
+interactive_console_output.xml
